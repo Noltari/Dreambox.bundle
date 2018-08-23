@@ -303,8 +303,7 @@ def DeleteTimer(sRef='', begin=0, end=0, servicename='', name='', oc=None):
 
 @route("/video/dreambox/Display_Event")
 def Display_Event(sender='', channel='', description='', filename=None, subfolders=None, duration=0,
-                  thumb=None, include_oc=False, rating_key=None,audioid=None, audio_description=None, includeExtras=0, includeRelated=0, includeRelatedCount=0,
-                  includeConcerts=0, includeBandwidths=0, asyncCheckFiles=0, offset=0, includePreferences=0, includePopularLeaves=0, includeChapters=0, includeOnDeck=0, checkFiles=0, own=0):
+                  thumb=None, include_oc=False, rating_key=None, audioid=None, **kwargs):
     import re
     rating_key = generate_rating_key(rating_key)
     Log('Entering Display Event sender {} channel {} desciprion {} filename {} subfolders {} duration {} '
@@ -385,9 +384,6 @@ def PlayVideo(channel, filename=None, folder=None, recorded=None, audioid=None, 
     else:
         folder = folder.replace('\\', '/')  # required to make correct path for subfolders
         Log('channel={} filename={}'.format(format_string(folder,clean_file=True), filename))
-        filename = format_string(filename, clean_file=True)
-        if filename[:3] != 'hdd':
-            filename= 'hdd/movie/{}/'.format(folder) + filename
         stream = 'http://{}:{}/file?file=/{}'.format(Prefs['host'], Prefs['port_web'], filename)
         Log('Recorded file  to play {}'.format(stream))
 

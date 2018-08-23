@@ -116,7 +116,7 @@ def Display_Bouquets():
     bouquets = get_bouquets(Prefs['host'],Prefs['port_web'])
     for bouquet in bouquets:
             items.append(DirectoryObject(key = Callback(Display_Bouquet_Channels, sender = str(bouquet[7]), index=str(bouquet[6])),
-                                    title = str(bouquet[7])))
+                                    title = bouquet[7]))
     items.append(PrefsObject(title='Preferences', thumb=R('icon-prefs.png')))
     oc = ObjectContainer(objects=items, view_group='List', no_cache=True, title2=Locale.LocalString('Live'))
     return oc
@@ -324,7 +324,8 @@ def DeleteTimer(sRef='', begin=0, end=0, servicename='', name='', oc=None):
 
 @route("/video/dreambox/Display_Event")
 def Display_Event(sender='', channel='', description='', filename=None, subfolders=None, duration=0,
-                  thumb=None, include_oc=False, rating_key=None,audioid=None, audio_description=None, includeExtras=0, includeRelated=0, includeRelatedCount=0):
+                  thumb=None, include_oc=False, rating_key=None,audioid=None, audio_description=None, includeExtras=0, includeRelated=0, includeRelatedCount=0,
+                  includeConcerts=0, includeBandwidths=0, asyncCheckFiles=0, offset=0, includePreferences=0, includePopularLeaves=0, includeChapters=0, includeOnDeck=0, checkFiles=0, own=0):
     import re
     container, video_codec, audio_codec = get_codecs()
     rating_key = generate_rating_key(rating_key)

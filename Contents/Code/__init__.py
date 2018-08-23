@@ -92,18 +92,6 @@ def MainMenu():
     return oc
 
 
-@route('/video/dreambox/thumb')
-def GetThumb(series):
-    locale = Locale.DefaultLocale
-    if locale == 'en-us':
-        locale='en'
-
-    Log('Default locale = {}'.format(locale))
-
-    data = get_thumb(series, locale)
-    return DataObject(data, 'image/jpeg')
-
-
 ##################################################################
 # Displays Bouquets when we have selected                        #
 # Live TV from the main menu                                     #
@@ -242,15 +230,6 @@ def Display_Channel_Events(sender, sRef, title=None):
             if result:
                 items.append(result)
 
-        #Add a future \ next event
-        elif start > 0:
-            pass
-            items.append(DirectoryObject(key=Callback(AddTimer,
-                                   title=title,
-                                   name=name, sRef=sRef, eventid=id),
-                                   title=title,
-                                   duration = remaining,
-                                   thumb=Callback(GetThumb, series=title)))
     items = check_empty_items(items)
     oc = ObjectContainer(objects=items, title2=sender, view_group='List', no_cache=True)
     return oc
@@ -371,7 +350,7 @@ def Display_Event(sender='', channel='', description='', filename=None, subfolde
         title = title,
         summary = description,
         duration = duration,
-        thumb = Callback(GetThumb, series=sender),
+        thumb = picon(channel),
         items = [
             MediaObject(
                 container = container,
@@ -606,9 +585,6 @@ def add_current_event(sRef=None, name=None, title=None, description=None, remain
                                                                                    audioid,
                                                                                    audio_description))
 
-    thumb=None
-    if not audioid:
-        thumb = Callback(GetThumb, series=title)
     tuner = 1
     if title == 'N/A':
         tuner = get_packets(sRef)
@@ -618,7 +594,7 @@ def add_current_event(sRef=None, name=None, title=None, description=None, remain
                                      channel=sRef,
                                      description=description,
                                      duration=remaining,
-                                     thumb=thumb,
+                                     thumb=piconfile,
                                      audioid=audioid,
                                      audio_description=audio_description)
     else:

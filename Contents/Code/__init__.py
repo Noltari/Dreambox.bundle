@@ -306,7 +306,6 @@ def Display_Event(sender='', channel='', description='', filename=None, subfolde
                   thumb=None, include_oc=False, rating_key=None,audioid=None, audio_description=None, includeExtras=0, includeRelated=0, includeRelatedCount=0,
                   includeConcerts=0, includeBandwidths=0, asyncCheckFiles=0, offset=0, includePreferences=0, includePopularLeaves=0, includeChapters=0, includeOnDeck=0, checkFiles=0, own=0):
     import re
-    container, video_codec, audio_codec = get_codecs()
     rating_key = generate_rating_key(rating_key)
     Log('Entering Display Event sender {} channel {} desciprion {} filename {} subfolders {} duration {} '
         'includeOC {} ratingkey {}'.format(sender, channel, description, filename,
@@ -333,7 +332,7 @@ def Display_Event(sender='', channel='', description='', filename=None, subfolde
     Log('Channel is {}'.format(channel))
     if recorded:
         channel =None
-    video = MovieObject(
+    video = VideoClipObject(
         key = Callback(Display_Event,
                        sender=sender,
                        channel=channel,
@@ -346,17 +345,12 @@ def Display_Event(sender='', channel='', description='', filename=None, subfolde
                        filename=filename,
                        subfolders=subfolders),
         rating_key = rating_key,
-        # This is what get displayedwhen the episode is displayed
         title = title,
         summary = description,
         duration = duration,
         thumb = picon(channel),
         items = [
             MediaObject(
-                container = container,
-                video_codec = video_codec,
-                audio_channels = 2,
-                audio_codec = audio_codec,
                 duration = duration,
                 parts = [PartObject(key=Callback(PlayVideo, channel=channel, audioid=audioid, filename=filename, folder=folder, recorded=recorded))]
             )
@@ -720,26 +714,6 @@ def timers(oc):
     if len(timer) > 0:
         oc.add(DirectoryObject(key=Callback(Display_Timer_Events, sender='Active Timers'),
                                  title='Active timers'))
-
-
-########################################################################
-# Load codecs from preferences if all available                        #
-# If not, load default values                                          #
-########################################################################
-def get_codecs():
-
-    if Prefs['video_codec'] and Prefs['audio_codec'] and Prefs['audio_codec']:
-        container = Prefs['container']
-        video_codec = Prefs['video_codec']
-        audio_codec = Prefs['audio_codec']
-    else:
-        video_codec = 'h264'
-        audio_codec = 'mp3'
-        container = 'mp4'
-        if (Client.Platform in BROWSERS ):
-            container = 'mpegts'
-
-    return (container, video_codec, audio_codec)
 
 
 ########################################################################
